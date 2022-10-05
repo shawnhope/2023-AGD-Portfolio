@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\PlayerControls.cs" />
     <Compile Include="Assets\Scripts\EnemyControls.cs" />
+    <Compile Include="Assets\Scripts\CombatManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
