@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
+    [SerializeField] SpriteRenderer spRen;
     public CharacterController controller;
     public Animator anim;
     public GameObject punch1;
@@ -15,6 +16,7 @@ public class PlayerControls : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
+        spRen = GetComponent<SpriteRenderer>();
         speed = 5f;
         jumpF = 3f;
     }
@@ -34,6 +36,7 @@ public class PlayerControls : MonoBehaviour
                 locomotion.y += Physics.gravity.y * Time.deltaTime; 
             //}
         }
+        SetAnimations();
     }
     public void Movement() {
         float _yTemp = locomotion.y;
@@ -52,9 +55,9 @@ public class PlayerControls : MonoBehaviour
         }
     }
     public void Attack() {
-        if (Input.GetKeyDown(KeyCode.Mouse0)/*&&!inCombat*/) {              //problem: nothing is stopping the animation from being constantly active bc player can spam click the attack button.
+        if (Input.GetKeyUp(KeyCode.Mouse0)/*&&!inCombat*/) {              //problem: nothing is stopping the animation from being constantly active bc player can spam click the attack button.
             //inCombat = true;
-            anim.SetTrigger("Punch");
+            anim.SetTrigger("Punch");                                       //bug for only ground combos: can be triggered in air and doesn't resolve until isGrounded; could be fixed with aerial attacks? or a ground check
             //punch1.SetActive(true);
             //StartCoroutine(Punch1Wait(punch1Wait));
         }
@@ -65,5 +68,16 @@ public class PlayerControls : MonoBehaviour
         //punch1.SetActive(false);
         //inCombat = false;
         StopCoroutine(Punch1Wait(punch1Wait));
+    }
+    void SetAnimations() {
+        //isMoving
+        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) { anim.SetBool("isMoving", true); } 
+        else { anim.SetBool("isMoving", false); }
+        //isGrounded
+        if (controller.isGrounded) { anim.SetBool("onGround", true); } 
+        else { anim.SetBool("onGround", false); }
+        //flip sprite
+        if (Input.GetAxisRaw("Horizontal") > 0.1 ) { spRen.flipX = false; punch1.transform.localPosition = new Vector3(2.5f, 2, 0); } 
+        else if((Input.GetAxisRaw("Horizontal") < -0.1)) { spRen.flipX = true; punch1.transform.localPosition = new Vector3(-2.5f, 2, 0); }
     }
 }
