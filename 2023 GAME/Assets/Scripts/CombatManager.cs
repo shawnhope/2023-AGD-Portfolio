@@ -10,7 +10,7 @@ public class CombatManager : MonoBehaviour
     //some kind of ticket system for enemies to take turns
 
     //States: Idling, Flanking, Engaged, Attack, FindingWeapon
-    //Idling: if player is not within range (ie if enemies are off screen), or enemy is waiting for its turn to engage
+    //Idling/Wandering: if player is not within range (ie if enemies are off screen), or enemy is waiting for its turn to engage
     //Flanking: if player is engaged with another enemy, other enemies circle around player, then idle
     //Engaged: if hit by player, or no other enemy is engaged; pursues player to attack
     //Attack: if engaged with player, can attack; if has ranged weapon, can attack?

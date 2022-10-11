@@ -12,7 +12,8 @@ public class EnemyControls : MonoBehaviour
     [SerializeField] SpriteRenderer spRen;
     [SerializeField] GameObject player;
     [SerializeField] Animator anim;
-    [SerializeField] bool busy;
+    [SerializeField] Vector3 destination;
+    [SerializeField] bool busy,engaged;
     private void OnEnable()
     {
         this.agent = this.GetComponent<NavMeshAgent>();
@@ -29,9 +30,11 @@ public class EnemyControls : MonoBehaviour
         if (!busy) { Decide(); }
 
         FlipCheck();
-        if (agent.remainingDistance > 2.3f) {
-            anim.SetFloat("remainingDis",agent.remainingDistance);
+        if (agent.remainingDistance > 2.3f)
+        {
+            anim.SetFloat("remainingDis", agent.remainingDistance);
         }
+
     }
     void Decide() {
         busy = true;
@@ -43,9 +46,14 @@ public class EnemyControls : MonoBehaviour
         {
             anim.SetTrigger("staggered");
             enemyHealth--;
+            agent.ResetPath();
+            //agent.isStopped=true;
+            //agent.isStopped = false;
+            engaged = true;
         }
         else {
-            print("Enemy has died!");
+            print("Enemy has died!"); 
+            engaged = false;
             this.gameObject.SetActive(false);
             thisDied?.Invoke(this.gameObject);
         }
@@ -67,6 +75,11 @@ public class EnemyControls : MonoBehaviour
         agent.SetDestination(player.transform.position);
         busy = false;
     }
+    void Wander() { 
+        destination = UnityEngine.Random.insideUnitSphere * 10 + player.transform.position;
+        agent.SetDestination(destination);
+        busy = false;  
+    }
     public int RandomNum() {
         int num;
         num = UnityEngine.Random.Range(1,10);
@@ -76,9 +89,10 @@ public class EnemyControls : MonoBehaviour
     public IEnumerator WaitToDecide()
     {
         yield return new WaitForSeconds(2);
-        if (RandomNum() >= 5)
+        if (RandomNum() >= 4)
         {
-            Chase();
+            if (!engaged) { Wander(); }
+            else { Chase(); }
         }
         else { busy = false; yield break; }
     }
