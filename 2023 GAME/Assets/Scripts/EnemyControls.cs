@@ -14,6 +14,7 @@ public class EnemyControls : MonoBehaviour
     [SerializeField] Animator anim;
     [SerializeField] Vector3 destination;
     [SerializeField] bool busy,engaged;
+
     private void OnEnable()
     {
         this.agent = this.GetComponent<NavMeshAgent>();
@@ -54,6 +55,7 @@ public class EnemyControls : MonoBehaviour
         else {
             print("Enemy has died!"); 
             engaged = false;
+
             this.gameObject.SetActive(false);
             thisDied?.Invoke(this.gameObject);
         }
@@ -80,16 +82,16 @@ public class EnemyControls : MonoBehaviour
         agent.SetDestination(destination);
         busy = false;  
     }
-    public int RandomNum() {
+    public int RandomNum(int n, int m) {
         int num;
-        num = UnityEngine.Random.Range(1,10);
+        num = UnityEngine.Random.Range(n,m);
         print(num);
         return num;
     }
     public IEnumerator WaitToDecide()
     {
         yield return new WaitForSeconds(2);
-        if (RandomNum() >= 4)
+        if (RandomNum(1, 11) >= 4)
         {
             if (!engaged) { Wander(); }
             else { Chase(); }

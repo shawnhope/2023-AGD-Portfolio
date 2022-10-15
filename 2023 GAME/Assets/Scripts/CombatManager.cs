@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class CombatManager : MonoBehaviour
 {
-    public List<GameObject> enemies;
-    //list of all enemies in current zone
-    //list of engaged enemies; cannot be more than..3?
+    //eventually turn into a scriptable object to hold each zone (and each level)'s enemies and spawn behavior? (ie spawn off screen, but run into view; or maybe all enemies spawn off screen)
+    public List<GameObject> enemies;    //list of all enemies in current zone
+    public List<GameObject> engagedEnemies;    //list of engaged enemies; cannot be more than..3?
+
     //some kind of ticket system for enemies to take turns
 
     //States: Idling, Flanking, Engaged, Attack, FindingWeapon
