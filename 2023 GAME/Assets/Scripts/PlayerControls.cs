@@ -10,6 +10,7 @@ public class PlayerControls : MonoBehaviour
     public GameObject punch1;
     public float speed, jumpF, punch1Wait=.25f;
     public bool inCombat;
+    public int health=10;
     public Vector3 locomotion;
 
     private void Awake()
@@ -55,17 +56,26 @@ public class PlayerControls : MonoBehaviour
         }
     }
     public void Attack() {
-        if (Input.GetKeyUp(KeyCode.Mouse0)/*&&!inCombat*/) {              //problem: nothing is stopping the animation from being constantly active bc player can spam click the attack button.
+        if (Input.GetKeyDown(KeyCode.Mouse0)/*&&!inCombat*/) {
             //inCombat = true;
-            anim.SetTrigger("Punch");                                       //bug for only ground combos: can be triggered in air and doesn't resolve until isGrounded; could be fixed with aerial attacks? or a ground check
-            //punch1.SetActive(true);
-            //StartCoroutine(Punch1Wait(punch1Wait));
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Punch1")&&controller.isGrounded) { anim.SetTrigger("Punch"); }
+            //else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Punch1")) { StartCoroutine(Punch1Wait(punch1Wait)); }
+        }
+    }
+    public void TakeDamage() {
+        if (health != 1)
+        {
+            anim.Play("Stagger");
+            health--;
+            print("Player damaged");
+        }
+        else {
+            print("GAME OVER");
         }
     }
     //could be changed out for animation states?:
     IEnumerator Punch1Wait(float timeToWait) {
         yield return new WaitForSeconds(timeToWait);
-        //punch1.SetActive(false);
         //inCombat = false;
         StopCoroutine(Punch1Wait(punch1Wait));
     }
